@@ -1,2 +1,2 @@
 #!/bin/bash
-nvim --cmd "set rtp+=/home/pierre/Links/Programs/vimPlugins"
+nvim --cmd "set rtp+=/home/pierre/Git/tmuxIntegration"

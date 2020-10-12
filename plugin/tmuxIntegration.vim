@@ -1,5 +1,4 @@
-
-"let g:MPDRunning = 0
+let g:TmuxTargetPane = 0
 
 fun! InitTmux()
 	lua for k in pairs(package.loaded) do if k:match("tmuxIntegration") then package.loaded[k] = nil end end
@@ -21,13 +20,24 @@ fun! MoveDown()
 	lua require("tmuxIntegration").moveDown()
 endfun
 
+fun! SendCommand() range
+	lua require("tmuxIntegration").sendCommand()
+endfun
+
+
+
+fun! SetTmuxTarget()
+	call inputsave()
+	let g:TmuxTargetPane = input("Target Pane: ")
+	call inputrestore()
+endfun
 
 augroup TmuxCommands
 	autocmd!
 augroup END
 
 
-noremap <silent> <C-h> :call MoveLeft()<CR>
-noremap <silent> <C-j> :call MoveDown()<CR>
-noremap <silent> <C-k> :call MoveUp()<CR>
-noremap <silent> <C-l> :call MoveRight()<CR>
+"noremap <silent> <C-h> :call MoveLeft()<CR>
+"noremap <silent> <C-j> :call MoveDown()<CR>
+"noremap <silent> <C-k> :call MoveUp()<CR>
+"noremap <silent> <C-l> :call MoveRight()<CR>

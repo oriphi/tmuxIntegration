@@ -26,6 +26,7 @@ local function moveLeft()
 		os.execute('tmux select-pane -L')
 	end
 end
+
 local function moveUp()
 	local windows = api.nvim_tabpage_list_wins(0)
 	local currentWin = api.nvim_get_current_win()
@@ -38,8 +39,7 @@ local function moveUp()
 		if(winPos < mini) then
 			mini = winPos
 		end
-	end
-	if(mini < pos) then
+	end if(mini < pos) then
 		-- Move inside vim
 		-- Move inside TMUX
 		api.nvim_command(':wincmd k')
@@ -93,10 +93,39 @@ local function moveDown()
 end
 
 
+local function sendCommand()
+	-- nvim_buf_get_lines({buffer}, {start}, {end}, {strict_indexing})
+
+	local pane = api.nvim_get_var("TmuxTargetPane")
+	local buffer = api.nvim_get_current_buf()
+
+	local p1 = vim.fn.getpos("'<")
+	local p2 = vim.fn.getpos("'>")
+	
+	local lines = api.nvim_buf_get_lines(buffer, p1[2] - 1, p2[2],0)
+	for i=1,#lines do
+		local line = lines[i]
+		line = line:gsub("\"", "\\\"")
+		line = line:gsub("\t", "    ")
+		local cmd = "tmux send-keys -l -t " .. pane .. ' "' .. line .. '"'
+		os.execute(cmd)
+		os.execute("tmux send-keys -t " .. pane .." Enter")
+	end
+
+end
+
+
+local function test()
+	-- 
+	local p1 = vim.fn.getpos("'<")
+	print(p1[1], p1[2])
+end
 
 return {
 	moveLeft = moveLeft,
 	moveRight = moveRight,
 	moveUp = moveUp,
 	moveDown = moveDown,
+	sendCommand= sendCommand,
+	test = test,
 }
